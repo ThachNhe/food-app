@@ -68,3 +68,14 @@ using ( bucket_id = 'reviews-images' and auth.uid() = owner);
 create policy "Users can delete their own images"
 on storage.objects for delete
 using ( bucket_id = 'reviews-images' and auth.uid() = owner);
+
+
+-- Fake restaurants
+INSERT INTO public.restaurants (name, address, city) VALUES
+('Bánh Đa Cua Bà Cụ', '23 Lý Tự Trọng', 'Hải Phòng'),
+('Nem Cua Bể Thanh Nga', '45 Đinh Tiên Hoàng', 'Hải Phòng'),
+('Bún Bò Huế Mẹ Tám', '12 Trần Phú', 'Huế'),
+('Phở Thìn', '13 Lò Đúc', 'Hà Nội'),
+('Bún Chả Hương Liên', '24 Lê Văn Hưu', 'Hà Nội'),
+('Cơm Tấm Thuận Kiều', '267 Lê Văn Sỹ', 'Hồ Chí Minh'),
+('Bánh Mì Phượng', '2B Phan Chu Trinh', 'Đà Nẵng');

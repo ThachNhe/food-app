@@ -1,54 +1,55 @@
-import { apiPost, apiGet } from '@/services/api'
-import { API_ENDPOINTS } from '@/services/endpoints'
-import type {
-  LoginPayload,
-  RegisterPayload,
-  LoginApiResponse,
-  RegisterApiResponse,
-} from '../types/auth.types'
-import type { User } from '@/types/common.types'
-import type { ApiResponse } from '@/types/api.types'
+import { supabase } from '@/lib/supabase'
 
-// ─── Auth Service ──────────────────────────────────────────────────────────
+// ─── Auth Service (Supabase Auth) ──────────────────────────────────────────
 
 export const authService = {
   /**
-   * Login with email & password
-   * Returns user info + tokens
+   * Đăng ký bằng email + password
    */
-  login: (payload: LoginPayload) =>
-    apiPost<LoginApiResponse>(API_ENDPOINTS.AUTH.LOGIN, payload),
+  signUp: async (email: string, password: string) => {
+    const { data, error } = await supabase.auth.signUp({ email, password })
+    if (error) throw new Error(error.message)
+    return data
+  },
 
   /**
-   * Register a new account
+   * Đăng nhập bằng email + password
    */
-  register: (payload: RegisterPayload) =>
-    apiPost<RegisterApiResponse>(API_ENDPOINTS.AUTH.REGISTER, payload),
-
-  /**
-   * Logout - invalidate token on server
-   */
-  logout: () =>
-    apiPost<ApiResponse>(API_ENDPOINTS.AUTH.LOGOUT),
-
-  /**
-   * Get current authenticated user
-   */
-  getMe: () =>
-    apiGet<User>(API_ENDPOINTS.AUTH.ME),
-
-  /**
-   * Send forgot password email
-   */
-  forgotPassword: (email: string) =>
-    apiPost<ApiResponse>(API_ENDPOINTS.AUTH.FORGOT_PASSWORD, { email }),
-
-  /**
-   * Reset password with token from email
-   */
-  resetPassword: (token: string, password: string) =>
-    apiPost<ApiResponse>(API_ENDPOINTS.AUTH.RESET_PASSWORD, {
-      token,
+  signIn: async (email: string, password: string) => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
       password,
-    }),
+    })
+    if (error) throw new Error(error.message)
+    return data
+  },
+
+  /**
+   * Đăng xuất
+   */
+  signOut: async () => {
+    const { error } = await supabase.auth.signOut()
+    if (error) throw new Error(error.message)
+  },
+
+  /**
+   * Lấy session hiện tại
+   */
+  getSession: async () => {
+    const { data, error } = await supabase.auth.getSession()
+    if (error) throw new Error(error.message)
+    return data.session
+  },
+
+  /**
+   * Lấy user hiện tại
+   */
+  getUser: async () => {
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser()
+    if (error) throw new Error(error.message)
+    return user
+  },
 }

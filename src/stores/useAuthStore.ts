@@ -1,64 +1,84 @@
 import { create } from 'zustand'
-import { devtools, persist } from 'zustand/middleware'
-import type { User } from '@/types/common.types'
+import { devtools } from 'zustand/middleware'
+import type { User, Session } from '@supabase/supabase-js'
+import { supabase } from '@/lib/supabase'
 
 interface AuthState {
-  // State
   user: User | null
-  token: string | null
+  session: Session | null
   isAuthenticated: boolean
-
-  // Actions
-  setUser: (user: User) => void
-  setToken: (token: string) => void
-  login: (user: User, token: string) => void
-  logout: () => void
-  updateUser: (partial: Partial<User>) => void
+  isLoading: boolean
+  initialize: () => Promise<void>
+  setSession: (session: Session | null) => void
+  logout: () => Promise<void>
 }
 
 export const useAuthStore = create<AuthState>()(
   devtools(
-    persist(
-      (set) => ({
-        // Initial state
-        user: null,
-        token: null,
-        isAuthenticated: false,
+    (set) => ({
+      user: null,
+      session: null,
+      isAuthenticated: false,
+      isLoading: true,
 
-        // Actions
-        setUser: (user) => set({ user }, false, 'auth/setUser'),
-
-        setToken: (token) => set({ token }, false, 'auth/setToken'),
-
-        login: (user, token) =>
-          set({ user, token, isAuthenticated: true }, false, 'auth/login'),
-
-        logout: () =>
+      initialize: async () => {
+        try {
+          const {
+            data: { session },
+          } = await supabase.auth.getSession()
           set(
-            { user: null, token: null, isAuthenticated: false },
+            {
+              session,
+              user: session?.user ?? null,
+              isAuthenticated: !!session?.user,
+              isLoading: false,
+            },
             false,
-            'auth/logout',
-          ),
+            'auth/initialize',
+          )
 
-        updateUser: (partial) =>
-          set(
-            (state) => ({
-              user: state.user ? { ...state.user, ...partial } : null,
-            }),
-            false,
-            'auth/updateUser',
-          ),
-      }),
-      {
-        name: 'auth-storage',
-        // Chỉ persist những field cần thiết
-        partialize: (state) => ({
-          user: state.user,
-          token: state.token,
-          isAuthenticated: state.isAuthenticated,
-        }),
+          // Listen for auth changes
+          supabase.auth.onAuthStateChange((_event, session) => {
+            set(
+              {
+                session,
+                user: session?.user ?? null,
+                isAuthenticated: !!session?.user,
+                isLoading: false,
+              },
+              false,
+              'auth/stateChange',
+            )
+          })
+        } catch {
+          set({ isLoading: false }, false, 'auth/initError')
+        }
       },
-    ),
+
+      setSession: (session) =>
+        set(
+          {
+            session,
+            user: session?.user ?? null,
+            isAuthenticated: !!session?.user,
+          },
+          false,
+          'auth/setSession',
+        ),
+
+      logout: async () => {
+        await supabase.auth.signOut()
+        set(
+          {
+            user: null,
+            session: null,
+            isAuthenticated: false,
+          },
+          false,
+          'auth/logout',
+        )
+      },
+    }),
     { name: 'AuthStore' },
   ),
 )

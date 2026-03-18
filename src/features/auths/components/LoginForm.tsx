@@ -80,12 +80,6 @@ export function LoginForm() {
                 <FormItem>
                   <div className="flex items-center justify-between">
                     <FormLabel>Mật khẩu</FormLabel>
-                    <Link
-                      to={ROUTES.FORGOT_PASSWORD}
-                      className="text-sm text-primary hover:underline"
-                    >
-                      Quên mật khẩu?
-                    </Link>
                   </div>
                   <FormControl>
                     <div className="relative">
