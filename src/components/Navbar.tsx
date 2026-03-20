@@ -1,14 +1,21 @@
-import { Link } from '@tanstack/react-router'
-import { LogOut, Plus, Menu, X, UtensilsCrossed } from 'lucide-react'
-import { useState } from 'react'
-import { useAuthStore } from '@/stores/useAuthStore'
-import { useLogout } from '@/features/auths/hooks/useLogin'
-import { Button } from '@/components/ui/button'
+import { Link } from "@tanstack/react-router";
+import {
+  LogOut,
+  Plus,
+  Menu,
+  X,
+  UtensilsCrossed,
+  BookMarked,
+} from "lucide-react";
+import { useState } from "react";
+import { useAuthStore } from "@/stores/useAuthStore";
+import { useLogout } from "@/features/auths/hooks/useLogin";
+import { Button } from "@/components/ui/button";
 
 export function Navbar() {
-  const { isAuthenticated, user } = useAuthStore()
-  const { mutate: logout } = useLogout()
-  const [mobileOpen, setMobileOpen] = useState(false)
+  const { isAuthenticated, user } = useAuthStore();
+  const { mutate: logout } = useLogout();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
     <nav className="sticky top-0 z-50 glass border-b border-border/50">
@@ -40,6 +47,20 @@ export function Navbar() {
             >
               Trang chủ
             </Link>
+            {/* <Link
+              to="/map"
+              className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-foreground/80 hover:text-foreground transition-colors rounded-lg hover:bg-accent"
+            >
+              <Map className="h-3.5 w-3.5" />
+              Bản đồ
+            </Link> */}
+            <Link
+              to="/foodmap"
+              className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-foreground/80 hover:text-foreground transition-colors rounded-lg hover:bg-accent"
+            >
+              <BookMarked className="h-3.5 w-3.5" />
+              Food Maps
+            </Link>
 
             {isAuthenticated ? (
               <>
@@ -54,7 +75,7 @@ export function Navbar() {
                 </Link>
                 <div className="ml-2 flex items-center gap-3">
                   <div className="h-8 w-8 rounded-full gradient-warm flex items-center justify-center text-white text-sm font-bold">
-                    {user?.email?.[0]?.toUpperCase() ?? 'U'}
+                    {user?.email?.[0]?.toUpperCase() ?? "U"}
                   </div>
                   <button
                     onClick={() => logout()}
@@ -89,7 +110,11 @@ export function Navbar() {
             className="md:hidden p-2 text-foreground"
             onClick={() => setMobileOpen(!mobileOpen)}
           >
-            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {mobileOpen ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <Menu className="h-5 w-5" />
+            )}
           </button>
         </div>
 
@@ -104,6 +129,20 @@ export function Navbar() {
               >
                 🏠 Trang chủ
               </Link>
+              <Link
+                to="/map"
+                onClick={() => setMobileOpen(false)}
+                className="px-3 py-2 text-sm font-medium text-foreground/80 hover:text-foreground rounded-lg hover:bg-accent"
+              >
+                🗺️ Bản đồ
+              </Link>
+              <Link
+                to="/foodmap"
+                onClick={() => setMobileOpen(false)}
+                className="px-3 py-2 text-sm font-medium text-foreground/80 hover:text-foreground rounded-lg hover:bg-accent"
+              >
+                📍 Food Maps
+              </Link>
 
               {isAuthenticated ? (
                 <>
@@ -116,8 +155,8 @@ export function Navbar() {
                   </Link>
                   <button
                     onClick={() => {
-                      logout()
-                      setMobileOpen(false)
+                      logout();
+                      setMobileOpen(false);
                     }}
                     className="px-3 py-2 text-sm font-medium text-left text-destructive hover:bg-accent rounded-lg"
                   >
@@ -147,5 +186,5 @@ export function Navbar() {
         )}
       </div>
     </nav>
-  )
+  );
 }

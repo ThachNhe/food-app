@@ -10,14 +10,23 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as MapRouteImport } from './routes/map'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as FoodmapIndexRouteImport } from './routes/foodmap/index'
 import { Route as ReviewNewRouteImport } from './routes/review/new'
 import { Route as RestaurantIdRouteImport } from './routes/restaurant/$id'
+import { Route as FoodmapNewRouteImport } from './routes/foodmap/new'
+import { Route as FoodmapIdRouteImport } from './routes/foodmap/$id'
 
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MapRoute = MapRouteImport.update({
+  id: '/map',
+  path: '/map',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -30,6 +39,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FoodmapIndexRoute = FoodmapIndexRouteImport.update({
+  id: '/foodmap/',
+  path: '/foodmap/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReviewNewRoute = ReviewNewRouteImport.update({
   id: '/review/new',
   path: '/review/new',
@@ -40,49 +54,97 @@ const RestaurantIdRoute = RestaurantIdRouteImport.update({
   path: '/restaurant/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FoodmapNewRoute = FoodmapNewRouteImport.update({
+  id: '/foodmap/new',
+  path: '/foodmap/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FoodmapIdRoute = FoodmapIdRouteImport.update({
+  id: '/foodmap/$id',
+  path: '/foodmap/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/map': typeof MapRoute
   '/register': typeof RegisterRoute
+  '/foodmap/$id': typeof FoodmapIdRoute
+  '/foodmap/new': typeof FoodmapNewRoute
   '/restaurant/$id': typeof RestaurantIdRoute
   '/review/new': typeof ReviewNewRoute
+  '/foodmap/': typeof FoodmapIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/map': typeof MapRoute
   '/register': typeof RegisterRoute
+  '/foodmap/$id': typeof FoodmapIdRoute
+  '/foodmap/new': typeof FoodmapNewRoute
   '/restaurant/$id': typeof RestaurantIdRoute
   '/review/new': typeof ReviewNewRoute
+  '/foodmap': typeof FoodmapIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/map': typeof MapRoute
   '/register': typeof RegisterRoute
+  '/foodmap/$id': typeof FoodmapIdRoute
+  '/foodmap/new': typeof FoodmapNewRoute
   '/restaurant/$id': typeof RestaurantIdRoute
   '/review/new': typeof ReviewNewRoute
+  '/foodmap/': typeof FoodmapIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/register' | '/restaurant/$id' | '/review/new'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/map'
+    | '/register'
+    | '/foodmap/$id'
+    | '/foodmap/new'
+    | '/restaurant/$id'
+    | '/review/new'
+    | '/foodmap/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/register' | '/restaurant/$id' | '/review/new'
+  to:
+    | '/'
+    | '/login'
+    | '/map'
+    | '/register'
+    | '/foodmap/$id'
+    | '/foodmap/new'
+    | '/restaurant/$id'
+    | '/review/new'
+    | '/foodmap'
   id:
     | '__root__'
     | '/'
     | '/login'
+    | '/map'
     | '/register'
+    | '/foodmap/$id'
+    | '/foodmap/new'
     | '/restaurant/$id'
     | '/review/new'
+    | '/foodmap/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LoginRoute: typeof LoginRoute
+  MapRoute: typeof MapRoute
   RegisterRoute: typeof RegisterRoute
+  FoodmapIdRoute: typeof FoodmapIdRoute
+  FoodmapNewRoute: typeof FoodmapNewRoute
   RestaurantIdRoute: typeof RestaurantIdRoute
   ReviewNewRoute: typeof ReviewNewRoute
+  FoodmapIndexRoute: typeof FoodmapIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -92,6 +154,13 @@ declare module '@tanstack/react-router' {
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/map': {
+      id: '/map'
+      path: '/map'
+      fullPath: '/map'
+      preLoaderRoute: typeof MapRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -108,6 +177,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/foodmap/': {
+      id: '/foodmap/'
+      path: '/foodmap'
+      fullPath: '/foodmap/'
+      preLoaderRoute: typeof FoodmapIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/review/new': {
       id: '/review/new'
       path: '/review/new'
@@ -122,15 +198,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RestaurantIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/foodmap/new': {
+      id: '/foodmap/new'
+      path: '/foodmap/new'
+      fullPath: '/foodmap/new'
+      preLoaderRoute: typeof FoodmapNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/foodmap/$id': {
+      id: '/foodmap/$id'
+      path: '/foodmap/$id'
+      fullPath: '/foodmap/$id'
+      preLoaderRoute: typeof FoodmapIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
+  MapRoute: MapRoute,
   RegisterRoute: RegisterRoute,
+  FoodmapIdRoute: FoodmapIdRoute,
+  FoodmapNewRoute: FoodmapNewRoute,
   RestaurantIdRoute: RestaurantIdRoute,
   ReviewNewRoute: ReviewNewRoute,
+  FoodmapIndexRoute: FoodmapIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

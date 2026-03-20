@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { Plus, Flame, Utensils } from 'lucide-react'
+import { Plus, Flame, Utensils, Map, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ReviewCard, ReviewCardSkeleton } from '@/components/ReviewCard'
 import { useReviews, useRealtimeReviews } from '@/hooks/useReviews'
 import { useAuthStore } from '@/stores/useAuthStore'
+import { FoodMapCard } from '@/components/map/FoodMapCard'
+import { FAKE_FOOD_MAPS } from '@/data/fakeMapData'
 
 function HomePage() {
   const { data: reviews, isLoading, error } = useReviews()
@@ -49,6 +51,31 @@ function HomePage() {
         </div>
       </section>
 
+      {/* Trending Food Maps Section */}
+      <section className="mx-auto max-w-5xl px-4 pb-8">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-8 rounded-lg gradient-primary flex items-center justify-center">
+              <Map className="h-4 w-4 text-white" />
+            </div>
+            <h2 className="text-xl font-heading font-bold text-foreground">
+              🔥 Bản đồ đang hot
+            </h2>
+          </div>
+          <Link
+            to="/foodmap"
+            className="flex items-center gap-1 text-sm text-primary hover:underline font-medium"
+          >
+            Xem tất cả <ChevronRight className="h-4 w-4" />
+          </Link>
+        </div>
+        <div className="space-y-2.5">
+          {FAKE_FOOD_MAPS.slice(0, 3).map((map) => (
+            <FoodMapCard key={map.id} map={map} variant="trending" />
+          ))}
+        </div>
+      </section>
+
       {/* Feed Section */}
       <section className="mx-auto max-w-5xl px-4 pb-16">
         <div className="flex items-center gap-2 mb-6">
@@ -59,6 +86,7 @@ function HomePage() {
             Review mới nhất
           </h2>
         </div>
+
 
         {/* Loading */}
         {isLoading && (

@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { ArrowLeft, MapPin, Clock } from 'lucide-react'
+import { ArrowLeft, MapPin, Clock, Navigation } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { RealScore } from '@/components/RealScore'
 import { StarRating } from '@/components/StarRating'
@@ -9,6 +9,8 @@ import {
   useReviewsByRestaurant,
   useRealScore,
 } from '@/hooks/useReviews'
+import { FakeMapCanvas } from '@/components/map/FakeMapCanvas'
+import { FAKE_RESTAURANTS } from '@/data/fakeMapData'
 
 function RestaurantDetailPage() {
   const { id } = Route.useParams()
@@ -101,9 +103,39 @@ function RestaurantDetailPage() {
 
       {/* Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Real Score — Sidebar */}
-        <div className="lg:col-span-1 order-first animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+        {/* Sidebar: Real Score + Mini Map */}
+        <div className="lg:col-span-1 order-first space-y-4 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
           {realScore && <RealScore data={realScore} />}
+
+          {/* Mini Map */}
+          {(() => {
+            const pin = FAKE_RESTAURANTS.find((r) => r.id === id) ?? FAKE_RESTAURANTS[Math.abs(id.charCodeAt(0) % FAKE_RESTAURANTS.length)]
+            return (
+              <div className="rounded-2xl bg-card border border-border overflow-hidden card-shadow">
+                <div className="px-4 pt-4 pb-2">
+                  <h3 className="text-sm font-heading font-bold text-foreground flex items-center gap-1.5">
+                    <MapPin className="h-4 w-4 text-primary" />
+                    Vị trí trên bản đồ
+                  </h3>
+                  <p className="text-xs text-muted-foreground mt-0.5">{restaurant.address}</p>
+                </div>
+                <FakeMapCanvas
+                  selectedId={pin.id}
+                  showCategoryFilter={false}
+                  mini={true}
+                  height="180px"
+                />
+                <div className="p-3">
+                  <Link to="/map">
+                    <button className="w-full flex items-center justify-center gap-1.5 py-2 rounded-xl gradient-primary text-white text-xs font-semibold hover:opacity-90 transition-opacity">
+                      <Navigation className="h-3.5 w-3.5" />
+                      Mở bản đồ & Chỉ đường
+                    </button>
+                  </Link>
+                </div>
+              </div>
+            )
+          })()}
         </div>
 
         {/* Reviews List */}
